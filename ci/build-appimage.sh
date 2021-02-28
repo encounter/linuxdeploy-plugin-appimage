@@ -48,7 +48,7 @@ make install DESTDIR=AppDir
 AIK_ARCH="$ARCH"
 [ "$ARCH" == "i386" ] && AIK_ARCH="i686"
 
-wget https://github.com/TheAssassin/linuxdeploy/releases/download/continuous/linuxdeploy-"$ARCH".AppImage
+wget https://github.com/encounter/linuxdeploy/releases/download/continuous/linuxdeploy-"$ARCH".AppImage
 chmod +x linuxdeploy-"$ARCH".AppImage
 
 # bundle appimagetool

@@ -48,11 +48,42 @@ jobs:
           name: AppImage i386
           path: linuxdeploy-plugin-appimage*.AppImage*
 
+  appimage-aarch64:
+    name: AppImage aarch64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.1.0
+        with:
+          submodules: recursive
+      - name: Build AppImage
+        uses: uraimo/run-on-arch-action@v2.0.5
+        with:
+          arch: aarch64
+          distro: ubuntu16.04
+          githubToken: ${{ github.token }}
+          dockerRunArgs: |
+            --volume "${PWD}:/build"
+          install: |
+            apt update
+            apt install -y build-essential wget
+            wget -q -O cmake-install.sh https://github.com/Kitware/CMake/releases/download/v3.19.6/cmake-3.19.6-Linux-$(uname -m).sh
+            sh cmake-install.sh --prefix=/usr --skip-license --exclude-subdir
+            rm cmake-install.sh
+          run: |
+            cd /build
+            ARCH=$(uname -m) ci/build-appimage.sh
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: AppImage aarch64
+          path: linuxdeploy-plugin-appimage*.AppImage*
+
   upload:
     name: Create release and upload artifacts
     needs:
       - appimage-x86_64
       - appimage-i386
+      - appimage-aarch64
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
